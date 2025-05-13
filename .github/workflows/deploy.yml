@@ -13,12 +13,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set Up SSH Key
+      - name: Set Up SSH Key Securely
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+          # Debug: Verify the SSH Key
+          echo "Debug: SSH Key File Permissions:"
+          ls -l ~/.ssh/id_rsa
+
+          # Debug: Display the First and Last Lines of the SSH Key
+          head -n 2 ~/.ssh/id_rsa
+          tail -n 2 ~/.ssh/id_rsa
 
       - name: Deploy to EC2 via SSH
         run: |
