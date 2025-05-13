@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Distributed Project Frontend</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Distributed Project</h1>
+    <div id="content">
+        <p>Time: <span id="time">Loading...</span></p>
+        <p>Name: <span id="name">Loading...</span></p>
+        <p>Quote: <span id="quote">Loading...</span></p>
+        <p>Date: <span id="date">Loading...</span></p>
+    </div>
+
+    <script>
+        async function fetchData() {
+            try {
+                const timeRes = await fetch('https://your-railway-service-url/time');
+                const nameRes = await fetch('https://your-digitalocean-service-url/name');
+                const quoteRes = await fetch('https://your-heroku-service-url/quote');
+                const dateRes = await fetch('https://your-vercel-service-url/api/date');
+
+                const time = await timeRes.json();
+                const name = await nameRes.json();
+                const quote = await quoteRes.json();
+                const date = await dateRes.json();
+
+                document.getElementById('time').innerText = time.time;
+                document.getElementById('name').innerText = name.name;
+                document.getElementById('quote').innerText = quote.quote;
+                document.getElementById('date').innerText = date.date;
+            } catch (error) {
+                document.getElementById('content').innerText = "Error loading data. Check if the services are running.";
+                console.error(error);
+            }
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
