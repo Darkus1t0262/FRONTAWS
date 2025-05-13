@@ -24,34 +24,22 @@
     <h1>Distributed Project</h1>
     <div id="content">
         <p>Time: <span id="time">Loading...</span></p>
-        <p>Name: <span id="name">Loading...</span></p>
-        <p>Quote: <span id="quote">Loading...</span></p>
-        <p>Date: <span id="date">Loading...</span></p>
     </div>
 
     <script>
         async function fetchData() {
             try {
-                const timeRes = await fetch('https://your-railway-service-url/time');
-                const nameRes = await fetch('https://your-digitalocean-service-url/name');
-                const quoteRes = await fetch('https://your-heroku-service-url/quote');
-                const dateRes = await fetch('https://your-vercel-service-url/api/date');
-
+                // Only Fetching Time from Railway API
+                const timeRes = await fetch('https://timeapi-production-1faf.up.railway.app/time');
                 const time = await timeRes.json();
-                const name = await nameRes.json();
-                const quote = await quoteRes.json();
-                const date = await dateRes.json();
-
                 document.getElementById('time').innerText = time.time;
-                document.getElementById('name').innerText = name.name;
-                document.getElementById('quote').innerText = quote.quote;
-                document.getElementById('date').innerText = date.date;
             } catch (error) {
-                document.getElementById('content').innerText = "Error loading data. Check if the services are running.";
-                console.error(error);
+                document.getElementById('time').innerText = "Error loading time. Please check if the service is running.";
+                console.error("Error fetching time:", error);
             }
         }
 
+        // Fetch data on page load
         fetchData();
     </script>
 </body>
