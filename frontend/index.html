@@ -1,46 +1,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Distributed Project Frontend</title>
+    <title>Distributed Programming Project - UCE</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 900px;
             margin: auto;
             padding: 20px;
             text-align: center;
         }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
+        .header {
+            margin-bottom: 30px;
         }
-        p {
-            font-size: 1.2rem;
+        .header img {
+            width: 100px;
+            height: 100px;
             margin-bottom: 10px;
+        }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+        h2 {
+            font-size: 1.2rem;
+            color: #555;
+        }
+        .members, .teacher {
+            margin-top: 20px;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .members h3, .teacher h3 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #444;
+        }
+        .members p, .teacher p {
+            margin: 5px 0;
+            font-size: 0.95rem;
+        }
+        .services {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .services a {
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            color: #ffffff;
+        }
+        .railway { background-color: #0b5fff; }
+        .railway:hover { background-color: #0046cc; }
+        .heroku { background-color: #5a3e85; }
+        .heroku:hover { background-color: #4b2d70; }
+        .digitalocean { background-color: #007bff; }
+        .digitalocean:hover { background-color: #0056cc; }
+        .aws { background-color: #f0ad4e; }
+        .aws:hover { background-color: #d9943d; }
+        footer {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #888;
         }
     </style>
 </head>
 <body>
-    <h1>Distributed Project</h1>
-    <div id="content">
-        <p>Time: <span id="time">Loading...</span></p>
+
+    <div class="header">
+        <img src="uce-logo.png" alt="UCE Logo">
+        <h1>Universidad Central del Ecuador</h1>
+        <h2>Distributed Programming Project</h2>
     </div>
 
-    <script>
-        async function fetchData() {
-            try {
-                // Only Fetching Time from Railway API
-                const timeRes = await fetch('https://timeapi-production-1faf.up.railway.app/time');
-                const time = await timeRes.json();
-                document.getElementById('time').innerText = time.time;
-            } catch (error) {
-                document.getElementById('time').innerText = "Error loading time. Please check if the service is running.";
-                console.error("Error fetching time:", error);
-            }
-        }
+    <div class="members">
+        <h3>Project Members</h3>
+        <p>Karen Garcia</p>
+        <p>Damian Cando</p>
+        <p>David Malquin</p>
+        <p>Josue Barrera</p>
+    </div>
 
-        // Fetch data on page load
-        fetchData();
-    </script>
+    <div class="teacher">
+        <h3>Project Supervisor</h3>
+        <p>Ing. Juan Pablo Guevara</p>
+    </div>
+
+    <div class="services">
+        <a href="https://timeapi-production-119e.up.railway.app/time" class="railway" target="_blank">Railway</a>
+        <a href="#" class="heroku" target="_blank">Heroku</a>
+        <a href="https://clownfish-app-cib36.ondigitalocean.app/" class="digitalocean" target="_blank">Digital Ocean</a>
+        <a href="http://your-ec2-public-ip/" class="aws" target="_blank">AWS</a>
+    </div>
+
+    <footer>
+        <p>© 2025 Distributed Programming Project - Universidad Central del Ecuador</p>
+    </footer>
+
 </body>
 </html>
