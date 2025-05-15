@@ -63,14 +63,19 @@
         .railway:hover { background-color: #0046cc; }
         .heroku { background-color: #5a3e85; }
         .heroku:hover { background-color: #4b2d70; }
-        .digitalocean { background-color: #007bff; }
-        .digitalocean:hover { background-color: #0056cc; }
-        .aws { background-color: #f0ad4e; }
-        .aws:hover { background-color: #d9943d; }
+        .vercel { background-color: #007bff; }
+        .vercel:hover { background-color: #0056cc; }
+        .digitalocean { background-color: #f0ad4e; }
+        .digitalocean:hover { background-color: #d9943d; }
         footer {
             margin-top: 30px;
             font-size: 0.85rem;
             color: #888;
+        }
+        .time-display {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #333;
         }
     </style>
 </head>
@@ -95,16 +100,40 @@
         <p>Ing. Juan Pablo Guevara</p>
     </div>
 
+    <div class="time-display">
+        <p><strong>Current Time:</strong> <span id="time">Loading...</span></p>
+    </div>
+
     <div class="services">
-        <a href="https://timeapi-production-119e.up.railway.app/time" class="railway" target="_blank">Railway</a>
+        <a href="https://timeapi-production-119e.up.railway.app/time" class="railway" target="_blank">Railway (Time API)</a>
         <a href="#" class="heroku" target="_blank">Heroku</a>
-        <a href="https://clownfish-app-cib36.ondigitalocean.app/" class="digitalocean" target="_blank">Digital Ocean</a>
-        <a href="http://your-ec2-public-ip/" class="aws" target="_blank">AWS</a>
+        <a href="https://vercel-three-gules-31.vercel.app/" class="vercel" target="_blank">Vercel (Currency Converter)</a>
+        <a href="https://clownfish-app-cib36.ondigitalocean.app/" class="digitalocean" target="_blank">Digital Ocean (Calculator)</a>
     </div>
 
     <footer>
         <p>© 2025 Distributed Programming Project - Universidad Central del Ecuador</p>
     </footer>
+
+    <script>
+        async function updateTime() {
+            try {
+                const response = await fetch('https://timeapi-production-119e.up.railway.app/time');
+                if (!response.ok) throw new Error("Unable to fetch time");
+                
+                const data = await response.json();
+                document.getElementById('time').innerText = data.time;
+            } catch (error) {
+                document.getElementById('time').innerText = "Error loading time.";
+                console.error("Time API Error:", error);
+            }
+        }
+
+        // Load time on page load
+        updateTime();
+        // Refresh time every 10 seconds
+        setInterval(updateTime, 10000);
+    </script>
 
 </body>
 </html>
