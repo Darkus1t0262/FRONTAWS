@@ -3,7 +3,7 @@ name: Deploy Frontend to Ubuntu EC2 via SSH
 on:
   push:
     branches:
-      - main  # Or your default branch
+      - main # Or your default branch
 
 jobs:
   deploy:
@@ -30,23 +30,11 @@ jobs:
 
       - name: Deploy to EC2 via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            # Ensure Docker is running
-            sudo systemctl start docker || sudo systemctl restart docker
-            
-            # Create the HTML directory if it does not exist
-            mkdir -p ~/html
-            
-            # Pull the latest Docker image from Docker Hub (Optional)
-            sudo docker pull nginx || echo "Using default Nginx"
-            
-            # Create an index.html file (Optional)
-            echo "<h1>Hello from GitHub Actions and Nginx!</h1>" | sudo tee ~/html/index.html
-
-            # Stop and remove the old container (if exists)
-            sudo docker stop frontend || true
-            sudo docker rm frontend || true
-            
-            # Run the Nginx container to serve the HTML
-            sudo docker run -d -p 80:80 --name frontend -v ~/html:/usr/share/nginx/html nginx
-          EOF
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
+          "sudo systemctl start docker || sudo systemctl restart docker; \
+           mkdir -p ~/html; \
+           sudo docker pull nginx || echo 'Using default Nginx'; \
+           echo '<h1>Hello from GitHub Actions and Nginx!</h1>' | sudo tee ~/html/index.html; \
+           sudo docker stop frontend || true; \
+           sudo docker rm frontend || true; \
+           sudo docker run -d -p 80:80 --name frontend -v ~/html:/usr/share/nginx/html nginx"
