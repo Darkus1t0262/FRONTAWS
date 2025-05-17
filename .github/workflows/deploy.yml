@@ -19,7 +19,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t darkjus/frontend:latest .
+          docker build -t darkjus/frontend:latest -f frontend/Dockerfile frontend/
       
       - name: Push Docker Image to Docker Hub
         run: |
