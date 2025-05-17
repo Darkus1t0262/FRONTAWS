@@ -1,40 +1,51 @@
-name: Deploy Frontend to Ubuntu EC2 via SSH
+name: Deploy Frontend to AWS EC2 via SSH
 
 on:
   push:
     branches:
-      - main # Or your default branch
+      - main  # Trigger on push to main branch
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set Up SSH Key Securely
+      - name: Set Up Docker
+        run: |
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Build Docker Image
+        run: |
+          docker build -t darkjus/frontend:latest .
+      
+      - name: Push Docker Image to Docker Hub
+        run: |
+          docker tag darkjus/frontend:latest darkjus/frontend:latest
+          docker push darkjus/frontend:latest
+
+      - name: Set Up SSH Key for EC2
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-          # Debug: Verify the SSH Key
-          echo "Debug: SSH Key File Permissions:"
-          ls -l ~/.ssh/id_rsa
-
-          # Debug: Display the First and Last Lines of the SSH Key
-          head -n 2 ~/.ssh/id_rsa
-          tail -n 2 ~/.ssh/id_rsa
-
       - name: Deploy to EC2 via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
-          "sudo systemctl start docker || sudo systemctl restart docker; \
-           mkdir -p ~/html; \
-           sudo docker pull nginx || echo 'Using default Nginx'; \
-           echo '<h1>Hello from GitHub Actions and Nginx!</h1>' | sudo tee ~/html/index.html; \
-           sudo docker stop frontend || true; \
-           sudo docker rm frontend || true; \
-           sudo docker run -d -p 80:80 --name frontend -v ~/html:/usr/share/nginx/html nginx"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            # Ensure Docker is running
+            sudo systemctl start docker || sudo systemctl restart docker
+            
+            # Pull the latest Docker image from Docker Hub
+            sudo docker pull darkjus/frontend:latest
+            
+            # Stop and remove the old container (if exists)
+            sudo docker stop frontend || true
+            sudo docker rm frontend || true
+            
+            # Run the new Docker container
+            sudo docker run -d -p 80:80 --name frontend darkjus/frontend:latest
+          EOF
